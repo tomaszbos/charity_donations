@@ -59,7 +59,9 @@ ROOT_URLCONF = 'charity_donation.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            'donations/templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
