@@ -11,20 +11,23 @@
   <body>
   <header>
     <nav class="container container--70">
+        {% if request.user.is_authenticated %}
+        <ul class="nav--actions">
+          <li class="logged-user">
+            Witaj {{ request.user.first_name }}
+            <ul class="dropdown">
+              <li><a href="#">Profil</a></li>
+              <li><a href="#">Ustawienia</a></li>
+              <li><a href="#">Wyloguj</a></li>
+            </ul>
+          </li>
+        </ul>
+        {% else %}
         <ul class="nav--actions">
           <li><a href="{% url 'login' %}" class="btn btn--small btn--without-border">Zaloguj</a></li>
           <li><a href="{% url 'register' %}" class="btn btn--small btn--highlighted">Załóż konto</a></li>
         </ul>
-{#        <ul class="nav--actions">#}
-{#          <li class="logged-user">#}
-{#            Witaj Agata#}
-{#            <ul class="dropdown">#}
-{#              <li><a href="#">Profil</a></li>#}
-{#              <li><a href="#">Ustawienia</a></li>#}
-{#              <li><a href="#">Wyloguj</a></li>#}
-{#            </ul>#}
-{#          </li>#}
-{#        </ul>#}
+        {% endif %}
         <ul>
           <li><a href="{% url "index" %}" class="btn btn--without-border active">Start</a></li>
           <li><a href="{% url "index" %}#steps" class="btn btn--without-border">O co chodzi?</a></li>

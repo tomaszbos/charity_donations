@@ -1,7 +1,8 @@
 from django.shortcuts import HttpResponse, redirect, render
 from django.views.generic import TemplateView, View
 from django.db.models import Sum
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, get_user_model, login
+from django.contrib.auth.models import User
 from django.urls import reverse_lazy
 
 from .models import Donation, Institution
@@ -30,9 +31,22 @@ class AddDonationView(TemplateView):
     template_name = 'form.html'
 
 
-class LoginView(TemplateView):
-    template_name = 'login.html'
+class LoginView(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'login.html')
 
+    def post(self, request, *args, **kwargs):
+        email = request.POST['email']
+        password = request.POST['password']
+        user = authenticate(
+            email=email,
+            password=password,
+        )
+        if user is not None:
+            login(self.request, user)
+            return render(request, 'index.html')
+        else:
+            return render(request, 'register.html')
 
 class RegisterView(View):
     def get(self, request, *args, **kwargs):
@@ -45,7 +59,7 @@ class RegisterView(View):
         password = request.POST['password']
         password2 = request.POST['password2']
         if password != password2:
-            return HttpResponse('Two different passwords provided! Enter the same password twice.')
+            return HttpResponse('Two different passwords provided! Enter the same password twice.')  # TODO: Proper error.
         user = get_user_model().objects.create_user(
             username=name + surname,
             first_name=name,
