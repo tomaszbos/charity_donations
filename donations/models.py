@@ -11,6 +11,8 @@ INSTITUTIONS = [
 
 class Category(models.Model):
     name = models.CharField(max_length=64)
+    def __str__(self):
+        return self.name
 
 
 class Institution(models.Model):
@@ -18,6 +20,8 @@ class Institution(models.Model):
     description = models.TextField()
     type = models.IntegerField(choices=INSTITUTIONS, default=1)
     categories = models.ManyToManyField(Category)
+    def __str__(self):
+        return self.name
 
 
 class Donation(models.Model):
