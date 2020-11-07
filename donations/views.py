@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import HttpResponse, redirect, render
 from django.views.generic import TemplateView, View
 from django.db.models import Sum
+from django.contrib.auth import get_user_model
+from django.urls import reverse_lazy
 
 from .models import Donation, Institution
 
@@ -32,9 +34,26 @@ class LoginView(TemplateView):
     template_name = 'login.html'
 
 
-class RegisterView(TemplateView):
-    template_name = 'register.html'
+class RegisterView(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'register.html')
 
+    def post(self, request, *args, **kwargs):
+        name = request.POST['name']
+        surname = request.POST['surname']
+        email = request.POST['email']
+        password = request.POST['password']
+        password2 = request.POST['password2']
+        if password != password2:
+            return HttpResponse('Two different passwords provided! Enter the same password twice.')
+        user = get_user_model().objects.create_user(
+            username=name + surname,
+            first_name=name,
+            last_name=surname,
+            email=email,
+            password=password,
+        )
+        return redirect(reverse_lazy('login'))
 
 class ConfirmationView(TemplateView):
     template_name = 'form-confirmation.html'
