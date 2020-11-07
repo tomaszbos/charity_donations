@@ -2,7 +2,7 @@ from django.shortcuts import HttpResponse, redirect, render
 from django.views.generic import TemplateView, View
 from django.db.models import Sum
 from django.contrib.auth import authenticate, get_user_model, login
-from django.contrib.auth.models import User
+from django.contrib.auth.views import LogoutView
 from django.urls import reverse_lazy
 
 from .models import Donation, Institution
@@ -48,6 +48,7 @@ class LoginView(View):
         else:
             return render(request, 'register.html')
 
+
 class RegisterView(View):
     def get(self, request, *args, **kwargs):
         return render(request, 'register.html')
@@ -69,5 +70,10 @@ class RegisterView(View):
         )
         return redirect(reverse_lazy('login'))
 
+
 class ConfirmationView(TemplateView):
     template_name = 'form-confirmation.html'
+
+
+class LogoutUserView(LogoutView):
+    template_name = 'index.html'
