@@ -2,10 +2,11 @@ from django.shortcuts import HttpResponse, redirect, render
 from django.views.generic import TemplateView, View
 from django.db.models import Sum
 from django.contrib.auth import authenticate, get_user_model, login
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LogoutView
 from django.urls import reverse_lazy
 
-from .models import Donation, Institution
+from .models import Category, Donation, Institution
 
 
 class LandingPageView(View):
@@ -27,8 +28,14 @@ class LandingPageView(View):
         return render(request, 'index.html', ctx)
 
 
-class AddDonationView(TemplateView):
-    template_name = 'form.html'
+class AddDonationView(LoginRequiredMixin, View):
+    login_url = reverse_lazy('login')
+    def get(self, request, *args, **kwargs):
+        categories = Category.objects.all()
+        ctx = {
+            'categories': categories,
+        }
+        return render(request, 'form.html', ctx)
 
 
 class LoginView(View):
